@@ -30,8 +30,16 @@ textarea::placeholder{color:var(--mut)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
 .chip{font:inherit;font-size:14px;color:var(--mut);background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:99px;padding:5px 14px;cursor:pointer;transition:border-color .25s,color .25s,transform .2s}
 .chip:hover{border-color:var(--a1);color:var(--ink);transform:translateY(-2px)}
-.go{font:600 17px "IBM Plex Sans Arabic",sans-serif;color:#fff;border:0;border-radius:99px;padding:11px 30px;cursor:pointer;background:linear-gradient(120deg,var(--a1),var(--a2));box-shadow:0 10px 30px -10px var(--a2);transition:transform .2s,box-shadow .3s}
-.go:hover{transform:translateY(-2px);box-shadow:0 16px 38px -10px var(--a2)}
+.go{position:relative;isolation:isolate;overflow:hidden;display:inline-flex;align-items:center;gap:12px;font:600 18px "IBM Plex Sans Arabic",sans-serif;color:#fff;border:0;border-radius:99px;padding:14px 34px 14px 30px;cursor:pointer;background:linear-gradient(100deg,#6C4CF1,#8F7BFF,#E04066,#8F7BFF,#6C4CF1) 0 0/200% 100%;animation:flow 6s linear infinite;box-shadow:0 14px 38px -12px rgba(224,64,102,.7),inset 0 1px 0 rgba(255,255,255,.35);transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
+@keyframes flow{to{background-position:200% 0}}
+.go:after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.4) 50%,transparent 65%);transform:translateX(130%);animation:sheen 4.5s 1.5s ease-in-out infinite}
+@keyframes sheen{35%,100%{transform:translateX(-130%)}}
+.go svg{width:22px;height:22px;flex:none;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.go:hover{transform:translateY(-3px);box-shadow:0 20px 44px -12px rgba(224,64,102,.85),inset 0 1px 0 rgba(255,255,255,.4)}
+.go:hover svg{transform:rotate(200deg) scale(1.12)}
+.go:active{transform:translateY(0) scale(.97)}
+.go.busy{pointer-events:none;filter:saturate(.75)}
+.go.busy svg{animation:spin 1s linear infinite}
 button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--a3);outline-offset:3px}
 .hint{color:var(--a2);font-size:14px;margin:8px 0 0;min-height:1.6em}
 .scan{width:130px;height:130px;border-radius:50%;margin:44px auto;position:relative;border:1px solid var(--line);background:repeating-radial-gradient(circle,transparent 0 21px,rgba(143,123,255,.3) 22px)}
@@ -59,9 +67,16 @@ button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid va
 .btn:hover{transform:translateY(-2px)}
 .btn.main{border:0;background:linear-gradient(120deg,var(--a1),var(--a2))}
 .empty{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;color:var(--mut)}
-.note{margin-top:34px;color:var(--mut);font-size:14px}
+.more{margin-top:38px;display:flex;justify-content:center}
+.all{position:relative;display:inline-flex;align-items:center;gap:12px;padding:13px 26px;border-radius:99px;color:var(--ink);text-decoration:none;font-weight:600;font-size:17px;border:1px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(120deg,var(--a3),var(--a1),var(--a2)) border-box;transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
+.all svg{width:20px;height:20px;flex:none;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.all .ch{color:var(--a3)}
+.all:hover{transform:translateY(-3px);box-shadow:0 14px 36px -14px var(--a1),0 0 0 4px rgba(143,123,255,.12)}
+.all:hover .ch{transform:translateX(-5px)}
+.all:active{transform:scale(.97)}
+.note{text-align:center;margin-top:18px;color:var(--mut);font-size:14px}
 .note a{color:var(--a1)}
-@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-delay:0s!important;transition:none!important}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-iteration-count:1!important;animation-delay:0s!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -73,12 +88,13 @@ button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid va
   <div class="box">
     <textarea id="idea" aria-label="فكرة المشروع" placeholder="مثال: تطبيق يذكّر كبار السن بأدويتهم ويبلّغ أهلهم إذا فاتتهم جرعة..."></textarea>
     <div class="chips" id="chips"></div>
-    <button class="go" id="go" type="button">اختبر فكرتي</button>
+    <button class="go" id="go" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5" opacity=".6"/><path d="M12 12L18 6"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/></svg><span>اختبر فكرتي</span></button>
     <p class="hint" id="hint" role="status" aria-live="polite"></p>
   </div>
   <div class="scan" id="scan" hidden aria-label="جاري المطابقة"></div>
   <div id="out" aria-live="polite"></div>
-  <p class="note">المطابقة بالكلمات والمجالات وليست تحليل ذكاء اصطناعي، فاكتب فكرتك بتفصيل يوضح المجال والمستفيد. <a href="index.html">شوف كل الفرص المفتوحة</a></p>
+  <div class="more"><a class="all" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5" opacity=".6"/><path d="M12 12L18 6"/></svg><span>شوف كل الفرص المفتوحة</span><svg class="ch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a></div>
+  <p class="note">المطابقة بالكلمات والمجالات وليست تحليل ذكاء اصطناعي، فاكتب فكرتك بتفصيل يوضح المجال والمستفيد.</p>
 </main>
 <script>
 /*ENGINE*/
@@ -142,9 +158,9 @@ async function run(){
  const idea=$('#idea').value.trim(),hint=$('#hint'),out=$('#out');
  if(busy)return;hint.textContent='';
  if(idea.length<15){hint.textContent='اكتب فكرتك في سطرين على الأقل عشان أقدر أطابقها.';return}
- busy=true;out.textContent='';$('#scan').hidden=false;
+ busy=true;$('#go').classList.add('busy');$('#go span').textContent='جاري الفحص…';out.textContent='';$('#scan').hidden=false;
  const [data]=await Promise.all([load(),new Promise(r=>setTimeout(r,still?0:1100))]);
- $('#scan').hidden=true;busy=false;
+ $('#scan').hidden=true;busy=false;$('#go').classList.remove('busy');$('#go span').textContent='اختبر فكرتي';
  if(!data){out.append(el('div','empty','تعذّر تحميل الفرص الآن. حدّث الصفحة بعد قليل.'));return}
  const all=(data.items||[]).filter(alive),th=themesOf(nt(idea));
  const rows=all.map(o=>({o,r:score(idea,o)})).filter(x=>x.r.s>=3).sort((a,b)=>b.r.s-a.r.s||(a.o.until||'9999').localeCompare(b.o.until||'9999')).slice(0,6);
