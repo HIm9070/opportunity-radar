@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>رادار الفرص</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Reem+Kufi:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EFEBFF;--bg2:#E2DBFF;--ink:#1B1240;--mut:#5B5380;--card:rgba(255,255,255,.75);--line:rgba(27,18,64,.14);--a1:#6C4CF1;--a2:#E8456B;--a3:#0F9F8F;--node:108,76,241;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#150E36;--bg2:#241757;--ink:#F3F0FF;--mut:#A9A0D6;--card:rgba(255,255,255,.07);--line:rgba(255,255,255,.14);--a1:#8F7BFF;--a2:#FF6B8B;--a3:#5EEAD4;--node:160,140,255;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#150E36;--bg2:#241757;--ink:#F3F0FF;--mut:#A9A0D6;--card:rgba(255,255,255,.07);--line:rgba(255,255,255,.14);--a1:#8F7BFF;--a2:#FF6B8B;--a3:#5EEAD4;--node:160,140,255;color-scheme:dark}
+*,*:before,*:after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.8 "IBM Plex Sans Arabic",Tahoma,sans-serif;overflow-x:hidden;min-height:100vh}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.glow{position:fixed;inset:-20% -10% auto auto;width:70vmax;height:70vmax;background:radial-gradient(circle,var(--bg2),transparent 65%);z-index:0;pointer-events:none}
+main{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:28px 20px 70px}
+.brand{display:flex;align-items:center;gap:10px;font:700 20px "Reem Kufi",sans-serif}
+.dot{width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));box-shadow:0 0 18px var(--a1);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.35);box-shadow:0 0 30px var(--a2)}}
+h1{font:700 clamp(40px,9vw,66px)/1.25 "Reem Kufi",sans-serif;margin:44px 0 10px}
+h1 span{display:inline-block;opacity:0;filter:blur(14px);transform:translateY(18px) scale(.96);animation:rise .9s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i)*.16s + .15s)}
+@keyframes rise{to{opacity:1;filter:blur(0);transform:none}}
+.sub{color:var(--mut);max-width:36em;margin:0 0 26px;opacity:0;animation:rise .9s .8s forwards}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:22px;opacity:0;animation:rise .9s 1s forwards}
+.bar input[type=search],.bar select{background:var(--card);border:1px solid var(--line);border-radius:99px;padding:9px 18px;color:var(--ink);font:inherit;font-size:15px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.bar input[type=search]{flex:1 1 220px;min-width:0}
+.bar label{display:flex;gap:6px;align-items:center;color:var(--mut);font-size:15px;cursor:pointer}
+.bar input:focus-visible,.bar select:focus-visible,.btn:focus-visible,.bar input[type=checkbox]:focus-visible{outline:2px solid var(--a3);outline-offset:3px}
+.count{color:var(--mut);font-size:14px;margin:0 4px 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:10px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);animation:rise .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--n)*.07s);transition:transform .25s,border-color .25s}
+.card:hover{transform:translateY(-4px);border-color:var(--a1)}
+.card h3{font:700 21px/1.4 "Reem Kufi",sans-serif;margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:13px;border:1px solid var(--line);border-radius:99px;padding:1px 11px;color:var(--mut)}
+.tag.prize{color:var(--a3);border-color:var(--a3)}
+.card p{margin:0;color:var(--mut);font-size:15px}
+.when{font-size:14px;color:var(--mut)}
+.left{align-self:flex-start;font-weight:600;font-size:14px;padding:3px 14px;border-radius:99px;background:rgba(var(--node),.16);color:var(--a1)}
+.left.soon{background:rgba(232,69,107,.16);color:var(--a2);animation:pulse2 1.8s ease-in-out infinite}
+@keyframes pulse2{50%{opacity:.6}}
+.acts{display:flex;gap:8px;margin-top:auto;padding-top:6px;flex-wrap:wrap}
+.btn{display:inline-block;text-decoration:none;border-radius:99px;padding:7px 18px;font-size:15px;font-weight:500;border:1px solid var(--line);color:var(--ink);transition:transform .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn.main{border:0;color:#fff;background:linear-gradient(120deg,var(--a1),var(--a2))}
+.empty,.err{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px;text-align:center;color:var(--mut)}
+.err{color:var(--a2)}
+footer{margin-top:40px;color:var(--mut);font-size:14px;text-align:center}
+footer a{color:var(--a1)}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-delay:0s!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<canvas id="bg" aria-hidden="true"></canvas>
+<main>
+  <div class="brand"><i class="dot"></i>رادار الفرص</div>
+  <h1 aria-label="كل هاكاثونات المملكة في مكان واحد"><span style="--i:0">كل</span> <span style="--i:1">هاكاثونات</span> <span style="--i:2">المملكة</span> <span style="--i:3">في</span> <span style="--i:4">مكان</span> <span style="--i:5">واحد</span></h1>
+  <p class="sub">تتحدث الفرص تلقائياً من قناة هاكثونات على تلجرام، والمنتهي منها يختفي لحاله.</p>
+  <div class="bar">
+    <input type="search" id="q" placeholder="ابحث باسم الفرصة أو المسار أو المدينة" aria-label="بحث">
+    <select id="mode" aria-label="نوع الحضور"><option value="">حضوري وعن بعد</option><option value="حضوري">حضوري</option><option value="عن بعد">عن بعد</option></select>
+    <select id="city" aria-label="المدينة"><option value="">كل المدن</option></select>
+    <label><input type="checkbox" id="prize"> لها جوائز</label>
+  </div>
+  <div class="count" id="count" role="status" aria-live="polite"></div>
+  <div id="list" class="grid"></div>
+  <footer id="foot"></footer>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+const AR=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const safe=u=>/^https?:\/\//.test(u||'')?u:null;
+let ALL=[];
+
+/* خلفية العقد */
+const cv=$('#bg'),cx=cv.getContext('2d');let W,H,P=[],mx=-999,my=-999;
+const still=matchMedia('(prefers-reduced-motion:reduce)').matches;
+function size(){const r=devicePixelRatio||1;cv.width=innerWidth*r;cv.height=innerHeight*r;cx.setTransform(r,0,0,r,0,0);W=innerWidth;H=innerHeight;
+ P=Array.from({length:Math.min(55,Math.floor(W*H/16000))},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,r:1+Math.random()*2}))}
+addEventListener('resize',size);size();
+addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY});
+function frame(){cx.clearRect(0,0,W,H);const c=getComputedStyle(document.documentElement).getPropertyValue('--node').trim();
+ for(const p of P){p.x+=p.vx;p.y+=p.vy;const dx=mx-p.x,dy=my-p.y;if(Math.hypot(dx,dy)<160){p.x+=dx*.004;p.y+=dy*.004}if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1}
+ for(let i=0;i<P.length;i++){const a=P[i];for(let j=i+1;j<P.length;j++){const b=P[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d<130){cx.strokeStyle=`rgba(${c},${(1-d/130)*.3})`;cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke()}}
+  cx.fillStyle=`rgba(${c},.75)`;cx.beginPath();cx.arc(a.x,a.y,a.r,0,7);cx.fill()}
+ if(!still)requestAnimationFrame(frame)}
+frame();
+
+/* البيانات */
+function urls(){const u=[],h=location.hostname;
+ if(h.endsWith('.github.io')){const o=h.split('.')[0],r=location.pathname.split('/')[1];if(r)u.push(`https://raw.githubusercontent.com/${o}/${r}/main/data/opportunities.json`)}
+ u.push('data/opportunities.json');return u}
+async function load(){for(const u of urls()){try{const r=await fetch(u+'?t='+Date.now(),{cache:'no-store'});if(r.ok)return await r.json()}catch(e){}}return null}
+const daysLeft=d=>d?Math.ceil((new Date(d+'T23:59:59')-Date.now())/864e5):null;
+const alive=i=>{const d=daysLeft(i.until);if(d!==null)return d>=0;return !i.posted||(Date.now()-new Date(i.posted))<45*864e5};
+
+function card(i,n){
+ const c=el('article','card');c.style.setProperty('--n',Math.min(n,12));
+ c.append(el('h3',null,i.name));
+ const m=el('div','meta');[i.city,i.mode].filter(Boolean).forEach(t=>m.append(el('span','tag',t)));
+ if(i.prize)m.append(el('span','tag prize','جوائز'));c.append(m);
+ const d=daysLeft(i.closes);
+ if(d!==null){const t=d===0?'يغلق التسجيل اليوم':`يغلق التسجيل بعد ${AR(d)} ${d===1?'يوم':d===2?'يومين':d<=10?'أيام':'يوماً'}`;c.append(el('span','left'+(d<=3?' soon':''),t))}
+ else c.append(el('span','left','التسجيل مفتوح'));
+ if(i.summary)c.append(el('p',null,i.summary));
+ if(i.eventText)c.append(el('div','when','موعد الفعالية: '+i.eventText));
+ if(i.prize)c.append(el('div','when','الجوائز: '+i.prize));
+ const a=el('div','acts');const l=safe(i.link);
+ if(l){const b=el('a','btn main','سجّل الآن');b.href=l;b.target='_blank';b.rel='noopener noreferrer';a.append(b)}
+ const t=safe(i.tgUrl);if(t){const b=el('a','btn','الرسالة في تلجرام');b.href=t;b.target='_blank';b.rel='noopener noreferrer';a.append(b)}
+ c.append(a);return c}
+
+function draw(){
+ const q=$('#q').value.trim(),mode=$('#mode').value,city=$('#city').value,pz=$('#prize').checked;
+ const rows=ALL.filter(i=>(!q||[i.name,i.summary,i.city,(i.tracks||[]).join(' ')].join(' ').includes(q))
+  &&(!mode||(i.mode||'').includes(mode))&&(!city||i.city===city)&&(!pz||i.prize));
+ const g=$('#list');g.textContent='';
+ rows.forEach((i,n)=>g.append(card(i,n)));
+ $('#count').textContent=rows.length?`${AR(rows.length)} فرصة متاحة الآن`:'';
+ if(!rows.length&&ALL.length){const e=el('div','empty','ما فيه فرص تطابق بحثك. جرّب تغيّر الفلاتر.');e.style.gridColumn='1/-1';g.append(e)}
+}
+['q','mode','city','prize'].forEach(id=>$('#'+id).addEventListener('input',draw));
+
+(async()=>{
+ const data=await load();const g=$('#list');
+ if(!data){const e=el('div','err','ما قدرنا نحمّل الفرص الآن. حدّث الصفحة بعد شوي.');e.style.gridColumn='1/-1';g.append(e);return}
+ ALL=(data.items||[]).filter(alive).sort((a,b)=>(a.until||'9999').localeCompare(b.until||'9999'));
+ [...new Set(ALL.map(i=>i.city).filter(Boolean))].sort().forEach(c=>{const o=el('option',null,c);o.value=c;$('#city').append(o)});
+ if(!ALL.length){const e=el('div','empty','لا توجد فرص مفتوحة حالياً، أو لم يكتمل أول تحديث بعد.');e.style.gridColumn='1/-1';g.append(e)}
+ draw();
+ const f=$('#foot');
+ f.textContent=data.updated?`آخر تحديث: ${new Date(data.updated).toLocaleString('ar-SA')}. المصدر: `:'المصدر: ';
+ const a=el('a',null,'قناة هاكثونات - ريما منقذ');a.href='https://t.me/hakathonat';a.target='_blank';a.rel='noopener noreferrer';f.append(a);
+})();
+</script>
+</body>
+</html>
