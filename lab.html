@@ -69,6 +69,13 @@ button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid va
 .btn{display:inline-block;text-decoration:none;border-radius:99px;padding:7px 18px;font-size:15px;font-weight:500;border:1px solid var(--line);color:var(--ink);transition:transform .2s}
 .btn:hover{transform:translateY(-2px)}
 .btn.main{border:0;background:linear-gradient(120deg,var(--a1),var(--a2))}
+.u{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px}
+.why{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:14.5px;line-height:1.7}
+.why li:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--a3);margin-inline-end:9px}
+.why li.gap{color:var(--mut)}.why li.gap:before{background:var(--mut);opacity:.5}
+.wk{margin:0;color:var(--mut);font-size:14px}
+.weak{margin-top:26px}.weak summary{cursor:pointer;color:var(--mut);font-size:15px;margin-bottom:12px}
+.weakc{opacity:.62}.weakc .meter{color:var(--mut)}
 .empty{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;color:var(--mut)}
 .more{margin-top:38px;display:flex;justify-content:center}
 .all{position:relative;display:inline-flex;align-items:center;gap:12px;padding:13px 26px;border-radius:99px;color:var(--ink);text-decoration:none;font-weight:600;font-size:17px;border:1px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(120deg,var(--a3),var(--a1),var(--a2)) border-box;transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
@@ -98,37 +105,71 @@ button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid va
   <div class="scan" id="scan" hidden aria-label="جاري المطابقة"></div>
   <div id="out" aria-live="polite"></div>
   <div class="more"><a class="all" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5" opacity=".6"/><path d="M12 12L18 6"/></svg><span>شوف كل الفرص المفتوحة</span><svg class="ch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a></div>
-  <p class="note">المطابقة بالكلمات والمجالات وليست تحليل ذكاء اصطناعي، فاكتب فكرتك بتفصيل يوضح المجال والمستفيد.</p>
+  <p class="note">المطابقة تفهم المجال والمستفيد والتقنية والعلاقات بينها، وكل سبب ترشيح مأخوذ من نص الفرصة نفسه، وليست تحليل ذكاء اصطناعي. كل ما كتبت فكرتك بتفصيل أكثر، تحسّنت الدقة.</p>
 </main>
 <script>
 /*ENGINE*/
 const nz=s=>String(s||'').toLowerCase().replace(/[\u064B-\u065F\u0670\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[^\p{L}\p{N}\s]/gu,' ').replace(/\s+/g,' ').trim();
 const nt=s=>' '+nz(s).replace(/(^| )(وال|بال|كال|فال|لل|ال)(?=\S{2})/g,'$1')+' ';
 const clean=s=>String(s||'').replace(/[\p{Extended_Pictographic}\uFE0F\u200d\u0640#]/gu,'').replace(/_/g,' ').replace(/\s+/g,' ').replace(/^[\s\-–—|:•*.]+|[\s\-–—|:•*.]+$/g,'');
-const STOP=new Set('فكره مشروع تطبيق نظام منصه يساعد ويساعد يبلغ ويبلغ هاكاثون هاكثون مسابقه مسابقات فرصه فرص يمكن عندي لدي ابغي ابي يكون هذا هذه الذي التي مثل خلال عبر بين حتي اذا اذا لكل كل'.split(' '));
-const re=k=>new RegExp(k.endsWith('=')?' '+k.slice(0,-1)+' ':' '+k);
-const T=[
-['الذكاء الاصطناعي',['ذكاء','ai=','تعلم الي','تعلم عميق','نموذج لغ','llm','روبوت','رؤيه حاسوب','تحليل بيانات','بيانات']],
-['الصحة',['صحه','صحيه','طبي','طبيب','مريض','مرضي','دواء','ادويه','علاج','مستشفي','عياد','تمريض','جرعه','طب=']],
-['التعليم',['تعليم','طلاب','طالب','معلم','مدرس','مدرب','جامع','تدريب','مهارات','خريج','دراس']],
-['المال والتقنية المالية',['مالي','دفع','بنك','استثمار','تمويل','فنتك','fintech','ادخار','تامين','محفظ','قرض','مصرف']],
-['الأمن السيبراني',['سيبران','اختراق','تشفير','خصوصي','احتيال','cyber','امن معلومات','حمايه']],
-['البيئة والاستدامة',['بيئ','استدام','نفايات','تدوير','طاقه','مناخ','كربون','مياه','تلوث','esg']],
-['الغذاء والزراعة',['زراع','غذاء','غذائ','مطعم','مطاعم','هدر','طعام','اغذيه','مزرع','محصول']],
-['النقل واللوجستيات',['نقل','مرور','توصيل','لوجست','شحن','سياره','مركبات','طيران','مواصلات','امداد']],
-['السياحة والثقافة',['سياح','حج=','حجاج','عمره','زائر','فندق','سفر','تراث','ثقاف','ترفيه','فعاليات']],
-['الحكومة والمدن الذكية',['حكوم','بلدي','مدن','رقمنه','تحول رقمي','خدمات عام']],
-['التجارة وريادة الأعمال',['تجار','متجر','تسويق','مبيعات','ريادي','ناشئه','عملاء','سوق','تجزئه']],
-['الألعاب والإبداع',['العاب','لعبه','gaming','محتوي','فيديو','تصميم','ابداع','موسيق','واقع معزز','واقع افتراضي']],
-['الوصول وكبار السن',['اعاقه','كبار سن','مسن','كفيف','صم=','ذوي']]
-].map(([n,ks])=>({n,rs:ks.map(re)}));
-const themesOf=t=>T.filter(x=>x.rs.some(r=>r.test(t))).map(x=>x.n);
-const toks=s=>[...new Set(nz(s).split(' ').map(w=>w.replace(/^(وال|بال|كال|فال|لل|ال)(?=\S{2})/,'')).filter(w=>w.length>=4&&!STOP.has(w)))];
-function score(idea,o){
- const it=nt(idea),ot=nt([o.name,o.summary,(o.tracks||[]).join(' ')].join(' '));
- const th=themesOf(it),sh=th.filter(n=>themesOf(ot).includes(n));
- const ot2=new Set(toks(ot)),words=toks(idea).filter(w=>ot2.has(w));
- return{s:sh.length*4+Math.min(words.length,4)*1.5,why:sh.concat(sh.length?[]:words.slice(0,2)),th}}
+const re=k=>new RegExp(k.endsWith('=')?' '+k.slice(0,-1)+' ':' '+(k.length>3?'[وبلفك]?':'')+k);
+const AX={d:'المجال',a:'المستفيد',t:'التقنية'};
+const C=[
+['health','d','الصحة','صحه|صحيه|طبي|طبيب|مريض|مرضي|دواء|ادويه|علاج|مستشفي|عياد|تمريض|جرعه|عافيه|سكري|طب='],
+['wellness','d','اللياقة والرياضة','لياقه|رياضه|رياضي|تغذيه'],
+['edu','d','التعليم','تعليم|معلم|مدرس|تدريب|مهارات|منهج|دراسي|تعلم=|مدرسه|مدرب|دورات'],
+['work','d','التوظيف','توظيف|وظائف|وظيفه|مهني|سيره ذاتيه'],
+['fin','d','المال','مالي|ماليه|دفع|بنك|استثمار|تمويل|فنتك|fintech|ادخار|تامين|محفظ|قرض|مصرف'],
+['biz','d','التجارة وريادة الأعمال','تجار|متجر|تسويق|مبيعات|ريادي|ناشئه|عملاء|تجزئه'],
+['cyber','d','الأمن السيبراني','سيبران|اختراق|تشفير|خصوصي|احتيال|cyber'],
+['env','d','البيئة والاستدامة','بيئ|استدام|نفايات|تدوير|مناخ|كربون|تلوث|esg'],
+['energy','d','الطاقة والمياه','طاقه|مياه|كهرب|هيدروجين'],
+['food','d','الغذاء والزراعة','زراع|غذاء|غذائ|هدر|طعام|اغذيه|مزرع|محصول'],
+['trans','d','النقل واللوجستيات','نقل|مرور|توصيل|لوجست|شحن|سياره|مركبات|طيران|مواصلات|امداد|تنقل'],
+['tour','d','السياحة والثقافة','سياح|حج=|عمره|فندق|سفر|تراث|ثقاف|ترفيه|فعاليات|ضيافه|متحف'],
+['gov','d','الحكومة والمدن الذكية','حكوم|بلدي|مدن=|رقمنه|خدمات حكوميه|خدمات عام|مدينه ذكيه'],
+['game','d','الألعاب والإعلام','العاب|لعبه|gaming|محتوي|فيديو|ابداع|موسيق|اعلام'],
+['elder','a','كبار السن','كبار سن|مسن|شيخوخه|متقاعد'],
+['student','a','الطلاب','طلاب|طالب|جامعي|خريج|متدرب|تلميذ'],
+['patient','a','المرضى','مريض|مرضي|مصاب|مزمن'],
+['disab','a','ذوو الإعاقة','اعاقه|كفيف|صم=|احتياجات خاصه'],
+['farmer','a','المزارعون','مزارع|فلاح|مربي'],
+['smb','a','أصحاب الأعمال والمطاعم','مطعم|مطاعم|تاجر|صاحب عمل|منشات|بائع'],
+['women','a','المرأة','نساء|سيدات|مراه|نسائي'],
+['kids','a','الأطفال والأسر','اطفال|طفل|ابناء|اسره'],
+['pilgrim','a','الحجاج والسياح','حجاج|معتمر|سائح|زائر'],
+['citizen','a','المواطنون والمجتمع','مواطن|سكان|اهالي|مجتمع'],
+['ai','t','الذكاء الاصطناعي','ذكاء اصطناع|ذكاء|ai=|تعلم الي|تعلم عميق|llm|شات بوت|chatgpt|رؤيه حاسوب|توليد|تنبؤ'],
+['data','t','تحليل البيانات','بيانات|تحليلات|تحليل|dashboard'],
+['iot','t','الأجهزة وإنترنت الأشياء','انترنت اشياء|iot|حساس|اجهزه|الكترونيات|درون|روبوت'],
+['chain','t','البلوك تشين','بلوك|blockchain|عملات رقميه|web3|nft'],
+['xr','t','الواقع المعزز والافتراضي','واقع معزز|واقع افتراضي|vr=|ar=|ميتافيرس|xr=']];
+const CI={},REL={};
+C.forEach(([id,a,l,k])=>CI[id]={id,a,l,rs:k.split('|').map(re)});
+'health,elder,.7;health,patient,.9;health,wellness,.6;health,disab,.5;patient,elder,.5;elder,disab,.3;edu,student,.9;edu,work,.6;edu,kids,.5;disab,edu,.3;work,women,.5;work,student,.5;fin,biz,.5;fin,cyber,.35;biz,smb,.8;biz,women,.3;food,env,.5;food,farmer,.8;food,smb,.6;food,trans,.3;trans,gov,.4;trans,env,.4;trans,tour,.3;env,energy,.8;env,gov,.3;energy,gov,.3;tour,pilgrim,.9;tour,smb,.4;tour,gov,.3;gov,citizen,.8;gov,cyber,.4;game,kids,.4;ai,data,.6;ai,iot,.3;xr,iot,.3'.split(';').forEach(s=>{const[a,b,w]=s.split(',');(REL[a]=REL[a]||[]).push([b,+w]);(REL[b]=REL[b]||[]).push([a,+w])});
+function readIdea(text){const t=nt(text),by={};
+ Object.values(CI).forEach(c=>{let h=0,f=1e9;c.rs.forEach(r=>{const m=t.match(new RegExp(r.source,'g'));if(m){h+=m.length;f=Math.min(f,t.search(r))}});if(h)(by[c.a]=by[c.a]||[]).push({c,h,f})});
+ const o=[];for(const a in by)by[a].sort((x,y)=>y.h-x.h||x.f-y.f).slice(0,2).forEach((x,i)=>o.push({c:x.c,w:i?.6:1}));return o}
+const GEN=/اي مجال|جميع المجالات|كل المجالات|ابتكار مفتوح|مفتوح لجميع|مفتوح لكل|مجالات متعدده/;
+function oppC(o){const m={};const add=(txt,w,src,snip)=>{const t=nt(txt);Object.values(CI).forEach(c=>{if(c.rs.some(r=>r.test(t))&&(!m[c.id]||m[c.id].w<w))m[c.id]={w,src,snip}})};
+ (o.tracks||[]).forEach(x=>add(x,1,'مسارات الفرصة',clean(x)));add(o.name,.9,'اسم الفرصة',clean(o.name));add(o.summary,.6,'وصف الفرصة','');Object.defineProperty(m,'_g',{value:GEN.test(nt([o.name,o.summary,(o.tracks||[]).join(' ')].join(' ')))});return m}
+function match(idea,oc){const ax={},ev=[];
+ idea.forEach(({c,w})=>{let b=0,why=null;const d=oc[c.id];if(d){b=d.w;why={d,o:c}}
+  (REL[c.id]||[]).forEach(([id,r])=>{const d=oc[id];if(d&&r*d.w>b){b=r*d.w;why={d,o:CI[id]}}});
+  const x=ax[c.a]=ax[c.a]||[0,0];x[0]+=b*w;x[1]+=w;ev.push({c,b,why})});
+ const nod=!Object.keys(oc).some(id=>CI[id].a==='d'),gen=!!oc._g&&nod,cv={};for(const a in ax)cv[a]=ax[a][0]/ax[a][1];
+ const hasD=cv.d!==undefined;if(gen&&hasD)cv.d=.45;
+ const W={d:.55,a:.2,t:.25};let s=0,z=0;for(const a in cv){s+=W[a]*cv[a];z+=W[a]}s=z?s/z:0;
+ if(hasD&&cv.d<.15)s=(cv.t||0)>=.8&&nod?Math.min(Math.max(s,.3),.34):Math.min(s,.2);else if(gen&&hasD)s=Math.min(s,.38);
+ return{s,ev,gen:gen&&hasD}}
+const sn=d=>d.snip?` «${d.snip.slice(0,70)}»`:'';
+function reasons(m){const ok=[],gap=[];m.ev.forEach(({c,b,why})=>{
+ if(b>=.3&&why)ok.push(why.o.id===c.id?`${AX[c.a]} «${c.l}»: مذكور في ${why.d.src}${sn(why.d)}`:`${AX[c.a]} «${c.l}»: مرتبط بـ«${why.o.l}» الذي تغطيه الفرصة (${why.d.src}${sn(why.d)})`);
+ else gap.push(`${AX[c.a]} «${c.l}»: لا يظهر في إعلان الفرصة`)});
+ if(m.gen)ok.push('الفرصة عامة ولا تحدد مجالًا، فتناسب أي فكرة مبدئيًا');return{ok,gap}}
+const tier=s=>s>=.65?'تطابق قوي':s>=.45?'تطابق جيد':s>=.3?'تطابق جزئي':'توافق ضعيف جدًا';
+const CON=[[/طلاب|جامعي|خريج/,'موجّهة للطلاب أو الخريجين'],[/نساء|سيدات|نسائي/,'موجّهة للنساء'],[/ناشئه|رواد اعمال|ريادي/,'للشركات الناشئة ورواد الأعمال'],[/نموذج اولي|mvp/,'قد تتطلب نموذجًا أوليًا'],[/ فريق | فرق /,'التقديم بفريق']];
+const conds=o=>{const t=nt([o.summary,(o.tracks||[]).join(' ')].join(' '));return CON.filter(([r])=>r.test(t)).map(x=>x[1])};
 /*END*/
 const $=s=>document.querySelector(s);
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
@@ -145,11 +186,13 @@ async function load(){for(const u of urls()){try{const r=await fetch(u+'?t='+Dat
 const EX=['تطبيق يذكّر كبار السن بأدويتهم ويبلّغ أهلهم إذا فاتتهم جرعة','منصة تربط الطلاب بمدربين من خريجي تخصصهم','نظام يقلل هدر الطعام في المطاعم'];
 EX.forEach(t=>{const b=el('button','chip',t);b.type='button';b.onclick=()=>{$('#idea').value=t;$('#idea').focus()};$('#chips').append(b)});
 
-function card(o,r,n,top){
- const c=el('article','card');c.style.setProperty('--n',n);c.append(el('h3',null,clean(o.name)));
- const pct=Math.min(100,Math.round(r.s/top*100)),lv=r.s>=8?'تطابق قوي':r.s>=4?'تطابق جيد':'تطابق محتمل';
- const m=el('div','meter',lv);const bar=el('i');bar.style.setProperty('--w',pct+'%');m.prepend(bar);c.append(m);
- const g=el('div','meta');r.why.forEach(w=>g.append(el('span','tag why',w)));[o.city,o.mode].filter(Boolean).forEach(t=>g.append(el('span','tag',t)));if(o.prize)g.append(el('span','tag prize','لها جوائز'));c.append(g);
+function card(o,m,n){
+ const c=el('article','card'+(m.s<.3?' weakc':''));c.style.setProperty('--n',n);c.append(el('h3',null,clean(o.name)));
+ const mt=el('div','meter',`${tier(m.s)} · ${AR(Math.round(m.s*100))}٪`),bar=el('i');bar.style.setProperty('--w',Math.round(m.s*100)+'%');mt.prepend(bar);c.append(mt);
+ if(m.s>=.3){const {ok,gap}=reasons(m),u=el('ul','why');ok.forEach(t=>u.append(el('li',null,t)));gap.forEach(t=>u.append(el('li','gap',t)));c.append(u)}
+ else c.append(el('p','wk','ما فيه علاقة واضحة بين فكرتك وما تغطيه هذه الفرصة.'));
+ const g=el('div','meta');[o.city,o.mode].filter(Boolean).forEach(t=>g.append(el('span','tag',t)));if(o.prize)g.append(el('span','tag prize','لها جوائز'));c.append(g);
+ const cd=m.s>=.3?conds(o):[];if(cd.length)c.append(el('p','wk','من نص الإعلان: '+cd.join('، ')+'. تأكد من الشروط قبل التسجيل.'));
  const d=daysLeft(o.closes);
  c.append(el('span','left'+(d!==null&&d<=3?' soon':''),d===null?'التسجيل مفتوح':d===0?'يغلق التسجيل اليوم':`يغلق التسجيل بعد ${AR(d)} ${d===1?'يوم':d===2?'يومين':d<=10?'أيام':'يوماً'}`));
  const a=el('div','acts'),l=safe(o.link),t=safe(o.tgUrl);
@@ -171,16 +214,15 @@ async function run(){
  const [data]=await Promise.all([load(),new Promise(r=>setTimeout(r,still?0:1100))]);
  $('#scan').hidden=true;busy=false;$('#go').classList.remove('busy');$('#go span').textContent='اختبر فكرتي';
  if(!data){out.append(el('div','empty','تعذّر تحميل الفرص الآن. حدّث الصفحة بعد قليل.'));return}
- const all=(data.items||[]).filter(alive),th=themesOf(nt(idea));
- const rows=all.map(o=>({o,r:score(idea,o)})).filter(x=>x.r.s>=3).sort((a,b)=>b.r.s-a.r.s||(a.o.until||'9999').localeCompare(b.o.until||'9999')).slice(0,6);
- const s=el('p','sum');
- s.append(document.createTextNode(th.length?'فهمت فكرتك في مجال ':'ما قدرت أحدد مجال فكرتك بوضوح. '));
- if(th.length)s.append(el('b',null,th.join('، ')));
- s.append(document.createTextNode(`. قارنتها مع ${AR(all.length)} فرصة مفتوحة.`));out.append(s);
- if(!rows.length){out.append(el('div','empty','ما لقيت فرصة قريبة من وصف فكرتك الآن. جرّب تضيف تفاصيل أكثر عن المجال والمستفيد، أو تصفّح كل الفرص من الرادار.'));return}
- const g=el('div','grid'),top=rows[0].r.s;rows.forEach((x,i)=>g.append(card(x.o,x.r,i,top)));
- out.append(el('p','sum',`لقيت ${AR(rows.length)} ${rows.length>2&&rows.length<11?'فرص':'فرصة'} تناسب فكرتك:`),g);
- g.scrollIntoView({behavior:still?'auto':'smooth',block:'start'})}
+ const all=(data.items||[]).filter(alive),id=readIdea(idea);
+ if(!id.length){out.append(el('div','empty','ما قدرت أفهم مجال فكرتك من هذا الوصف. اكتب المجال والمستفيد والتقنية اللي تفكر فيها، مثل: تطبيق بالذكاء الاصطناعي يساعد كبار السن في الصحة.'));return}
+ const u=el('div','u');['d','a','t'].forEach(a=>{const x=id.filter(e=>e.c.a===a).map(e=>e.c.l);if(x.length)u.append(el('span','tag why',`${AX[a]}: ${x.join('، ')}`))});
+ const s=el('p','sum');s.append(document.createTextNode('فهمت فكرتك هكذا، وقارنتها مع '+AR(all.length)+' فرصة مفتوحة:'));out.append(s,u);
+ const ms=all.map(o=>({o,m:match(id,oppC(o))})).sort((a,b)=>b.m.s-a.m.s||(a.o.until||'9999').localeCompare(b.o.until||'9999'));
+ const main=ms.filter(x=>x.m.s>=.3).slice(0,6),weak=ms.filter(x=>x.m.s<.3).slice(0,5);
+ if(main.length){const g=el('div','grid');main.forEach((x,i)=>g.append(card(x.o,x.m,i)));out.append(el('p','sum',`${AR(main.length)} ${main.length>2&&main.length<11?'فرص':'فرصة'} تناسب فكرتك، مرتبة من الأنسب:`),g);g.scrollIntoView({behavior:still?'auto':'smooth',block:'start'})}
+ else out.append(el('div','empty','ما فيه فرصة مفتوحة تناسب فكرتك الآن. هذا ما يعني أن فكرتك ضعيفة، بس ما فيه حاليًا فرص قريبة من مجالها. جرّب لاحقًا بعد التحديث القادم.'));
+ if(weak.length){const dt=el('details','weak'),g=el('div','grid');dt.append(el('summary',null,`فرص أخرى بتوافق ضعيف جدًا (${AR(weak.length)}). غالبًا غير مناسبة لفكرتك`));weak.forEach((x,i)=>g.append(card(x.o,x.m,i)));dt.append(g);out.append(dt)}}
 $('#go').onclick=run;hist();
 $('#idea').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey))run()});
 </script>

@@ -104,7 +104,7 @@ export function parseMessage(text, links, id, posted) {
     name,
     city,
     mode,
-    summary: desc.join(' ').slice(0, 280),
+    summary: desc.join(' ').slice(0, 700),
     tracks: (fields.tracks || []).slice(0, 8),
     eventText: eventText.slice(0, 200),
     eventStart: evDates[0] || null,
