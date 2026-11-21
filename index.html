@@ -27,11 +27,24 @@ h1{font:700 clamp(40px,9vw,66px)/1.25 "Reem Kufi",sans-serif;margin:44px 0 10px}
 h1 span{display:inline-block;opacity:0;filter:blur(14px);transform:translateY(18px) scale(.96);animation:rise .9s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i)*.16s + .15s)}
 @keyframes rise{to{opacity:1;filter:blur(0);transform:none}}
 .sub{color:var(--mut);max-width:36em;margin:0 0 26px;opacity:0;animation:rise .9s .8s forwards}
+.lab{display:inline-flex;align-items:center;gap:10px;margin:0 0 24px;padding:9px 20px;border-radius:99px;border:1px solid var(--line);background:var(--card);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--ink);text-decoration:none;font-size:15px;font-weight:500;opacity:0;animation:rise .9s .95s forwards;transition:border-color .3s,box-shadow .4s,transform .2s}
+.lab:hover{border-color:var(--a1);box-shadow:0 10px 30px -12px rgba(var(--node),.6);transform:translateY(-2px)}
+.lab:focus-visible{outline:2px solid var(--a3);outline-offset:3px}
+.lab i{width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,var(--a3),var(--a1));box-shadow:0 0 12px var(--a3)}
 .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:22px;opacity:0;animation:rise .9s 1s forwards}
 .bar input[type=search],.bar select{background:var(--card);border:1px solid var(--line);border-radius:99px;padding:9px 18px;color:var(--ink);font:inherit;font-size:15px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .bar input[type=search]{flex:1 1 220px;min-width:0}
 .bar label{display:flex;gap:6px;align-items:center;color:var(--mut);font-size:15px;cursor:pointer}
 .bar input:focus-visible,.bar select:focus-visible,.btn:focus-visible,.bar input[type=checkbox]:focus-visible{outline:2px solid var(--a3);outline-offset:3px}
+.stats{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 22px}
+.stat{flex:1 1 130px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 18px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:reveal .9s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--n,0)*.12s + .2s)}
+.stat b{display:block;font:700 32px/1.3 "Reem Kufi",sans-serif;color:var(--a1)}
+.stat span{font-size:14px;color:var(--mut)}
+.themes{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
+.th{font:inherit;font-size:14px;color:var(--mut);background:var(--card);border:1px solid var(--line);border-radius:99px;padding:5px 16px;cursor:pointer;transition:border-color .25s,color .25s,transform .2s,box-shadow .3s}
+.th:hover{border-color:var(--a1);color:var(--ink);transform:translateY(-2px)}
+.th[aria-pressed=true]{color:#fff;border-color:transparent;background:linear-gradient(120deg,var(--a1),var(--a2));box-shadow:0 8px 22px -10px var(--a2)}
+.th:focus-visible{outline:2px solid var(--a3);outline-offset:3px}
 .count{color:var(--mut);font-size:14px;margin:0 4px 14px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
 .card{position:relative;overflow:hidden;opacity:0;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:11px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transform:perspective(900px) translateY(var(--ty,0px)) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .2s ease-out,border-color .3s,box-shadow .4s}
@@ -70,12 +83,15 @@ footer a{color:var(--a1)}
   <div class="brand"><i class="dot"></i>رادار الفرص</div>
   <h1 aria-label="كل هاكاثونات المملكة في مكان واحد"><span style="--i:0">كل</span> <span style="--i:1">هاكاثونات</span> <span style="--i:2">المملكة</span> <span style="--i:3">في</span> <span style="--i:4">مكان</span> <span style="--i:5">واحد</span></h1>
   <p class="sub">تتحدّث الفرص تلقائياً كل ٣ ساعات من قناة هاكثونات على تلجرام، وما انتهى موعده يختفي من الصفحة.</p>
+  <a class="lab" href="lab.html"><i></i>عندك فكرة مشروع؟ اختبرها في مختبر الأفكار</a>
+  <div class="stats" id="stats" aria-live="polite"></div>
   <div class="bar">
     <input type="search" id="q" placeholder="ابحث باسم الفرصة أو المسار أو المدينة" aria-label="بحث">
     <select id="mode" aria-label="نوع الحضور"><option value="">حضوري وعن بعد</option><option value="حضوري">حضوري</option><option value="عن بعد">عن بعد</option></select>
     <select id="city" aria-label="المدينة"><option value="">كل المدن</option></select>
     <label><input type="checkbox" id="prize"> لها جوائز</label>
   </div>
+  <div class="themes" id="themes" role="group" aria-label="تصفية حسب المجال"></div>
   <div class="count" id="count" role="status" aria-live="polite"></div>
   <div id="list" class="grid"></div>
   <footer id="foot"></footer>
@@ -85,7 +101,28 @@ const $=s=>document.querySelector(s);
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
 const AR=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
 const safe=u=>/^https?:\/\//.test(u||'')?u:null;
-let ALL=[];
+let ALL=[],theme='';
+
+const nz=s=>String(s||'').toLowerCase().replace(/[\u064B-\u065F\u0670\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[^\p{L}\p{N}\s]/gu,' ').replace(/\s+/g,' ').trim();
+const nt=s=>' '+nz(s).replace(/(^| )(وال|بال|كال|فال|لل|ال)(?=\S{2})/g,'$1')+' ';
+const re=k=>new RegExp(k.endsWith('=')?' '+k.slice(0,-1)+' ':' '+k);
+const T=[
+['الذكاء الاصطناعي',['ذكاء','ai=','تعلم الي','تعلم عميق','نموذج لغ','llm','روبوت','رؤيه حاسوب','تحليل بيانات','بيانات']],
+['الصحة',['صحه','صحيه','طبي','طبيب','مريض','مرضي','دواء','ادويه','علاج','مستشفي','عياد','تمريض','جرعه','طب=']],
+['التعليم',['تعليم','طلاب','طالب','معلم','مدرس','مدرب','جامع','تدريب','مهارات','خريج','دراس']],
+['المال والتقنية المالية',['مالي','دفع','بنك','استثمار','تمويل','فنتك','fintech','ادخار','تامين','محفظ','قرض','مصرف']],
+['الأمن السيبراني',['سيبران','اختراق','تشفير','خصوصي','احتيال','cyber','امن معلومات','حمايه']],
+['البيئة والاستدامة',['بيئ','استدام','نفايات','تدوير','طاقه','مناخ','كربون','مياه','تلوث','esg']],
+['الغذاء والزراعة',['زراع','غذاء','غذائ','مطعم','مطاعم','هدر','طعام','اغذيه','مزرع','محصول']],
+['النقل واللوجستيات',['نقل','مرور','توصيل','لوجست','شحن','سياره','مركبات','طيران','مواصلات','امداد']],
+['السياحة والثقافة',['سياح','حج=','حجاج','عمره','زائر','فندق','سفر','تراث','ثقاف','ترفيه','فعاليات']],
+['الحكومة والمدن الذكية',['حكوم','بلدي','مدن','رقمنه','تحول رقمي','خدمات عام']],
+['التجارة وريادة الأعمال',['تجار','متجر','تسويق','مبيعات','ريادي','ناشئه','عملاء','سوق','تجزئه']],
+['الألعاب والإبداع',['العاب','لعبه','gaming','محتوي','فيديو','تصميم','ابداع','موسيق','واقع معزز','واقع افتراضي']],
+['الوصول وكبار السن',['اعاقه','كبار سن','مسن','كفيف','صم=','ذوي']]
+].map(([n,ks])=>({n,rs:ks.map(re)}));
+const themesOf=t=>T.filter(x=>x.rs.some(r=>r.test(t))).map(x=>x.n);
+
 const clean=s=>String(s||'').replace(/[\p{Extended_Pictographic}\uFE0F\u200d\u0640#]/gu,'').replace(/_/g,' ').replace(/\s+/g,' ').replace(/^[\s\-–—|:•*.]+|[\s\-–—|:•*.]+$/g,'');
 const tidy=s=>{s=clean(s);if(s.length>=250){s=s.slice(0,250);s=s.slice(0,s.lastIndexOf(' '))+'…'}return s};
 const io=new IntersectionObserver(es=>{let k=0;es.forEach(e=>{if(e.isIntersecting){io.unobserve(e.target);const t=e.target;setTimeout(()=>t.classList.add('in'),k++*90)}})},{threshold:.06});
@@ -132,10 +169,17 @@ function card(i,n){
  if(!still){c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;c.style.setProperty('--mx',x*100+'%');c.style.setProperty('--my',y*100+'%');c.style.setProperty('--rx',(.5-y)*6+'deg');c.style.setProperty('--ry',(x-.5)*6+'deg')});c.addEventListener('pointerleave',()=>{c.style.setProperty('--rx','0deg');c.style.setProperty('--ry','0deg')})}
  return c}
 
+function ticker(e,n){if(still){e.textContent=AR(n);return}const t0=performance.now();(function f(t){const p=Math.min(1,(t-t0)/1000);e.textContent=AR(Math.round(n*(1-Math.pow(1-p,3))));if(p<1)requestAnimationFrame(f)})(t0)}
+function stats(){const box=$('#stats');box.textContent='';if(!ALL.length)return;
+ const w=ALL.filter(i=>{const d=daysLeft(i.closes);return d!==null&&d>=0&&d<=7}).length;
+ [[ALL.length,'فرصة مفتوحة الآن'],[w,'تغلق خلال أسبوع'],[ALL.filter(i=>i.prize).length,'لها جوائز']].forEach(([n,l],k)=>{const s=el('div','stat'),b=el('b',null,'٠');s.style.setProperty('--n',k);s.append(b,el('span',null,l));box.append(s);ticker(b,n)})}
+function chips(){const c={};ALL.forEach(i=>(i._th||[]).forEach(n=>c[n]=(c[n]||0)+1));
+ const box=$('#themes');box.textContent='';const names=Object.keys(c).sort((a,b)=>c[b]-c[a]).slice(0,8);if(!names.length)return;
+ [['','الكل'],...names.map(n=>[n,`${n} ${AR(c[n])}`])].forEach(([n,t])=>{const b=el('button','th',t);b.type='button';b.setAttribute('aria-pressed',String(n===theme));b.onclick=()=>{theme=n;[...box.children].forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');draw()};box.append(b)})}
 function draw(){
  const q=$('#q').value.trim(),mode=$('#mode').value,city=$('#city').value,pz=$('#prize').checked;
  const rows=ALL.filter(i=>(!q||[i.name,i.summary,i.city,(i.tracks||[]).join(' ')].join(' ').includes(q))
-  &&(!mode||(i.mode||'').includes(mode))&&(!city||i.city===city)&&(!pz||i.prize));
+  &&(!mode||(i.mode||'').includes(mode))&&(!city||i.city===city)&&(!theme||(i._th||[]).includes(theme))&&(!pz||i.prize));
  const g=$('#list');g.textContent='';
  rows.forEach((i,n)=>{const c=card(i,n);g.append(c);io.observe(c)});
  if(rows.length)countUp(rows.length);else $('#count').textContent='';
@@ -147,6 +191,7 @@ function draw(){
  const data=await load();const g=$('#list');
  if(!data){const e=el('div','err','تعذّر تحميل الفرص الآن. حدّث الصفحة بعد قليل.');e.style.gridColumn='1/-1';g.append(e);return}
  ALL=(data.items||[]).filter(alive).sort((a,b)=>(a.until||'9999').localeCompare(b.until||'9999'));
+ ALL.forEach(i=>{i._th=themesOf(nt([i.name,i.summary,(i.tracks||[]).join(' ')].join(' ')))});stats();chips();
  [...new Set(ALL.map(i=>i.city).filter(Boolean))].sort().forEach(c=>{const o=el('option',null,c);o.value=c;$('#city').append(o)});
  if(!ALL.length){const e=el('div','empty','لا توجد فرص مفتوحة حالياً. إن كان هذا أول تشغيل، انتظر اكتمال أول تحديث.');e.style.gridColumn='1/-1';g.append(e)}
  draw();
