@@ -41,6 +41,8 @@ textarea::placeholder{color:var(--mut)}
 .go.busy{pointer-events:none;filter:saturate(.75)}
 .go.busy svg{animation:spin 1s linear infinite}
 button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--a3);outline-offset:3px}
+.chip[aria-pressed=true]{color:#fff;border-color:transparent;background:linear-gradient(120deg,var(--a1),var(--a2))}
+.spec{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px;color:var(--mut);font-size:14px}
 .hist{margin:0 0 14px}
 .hh{display:flex;justify-content:space-between;align-items:center;color:var(--mut);font-size:14px;margin-bottom:6px}
 .lnk{background:none;border:0;color:var(--a1);font:inherit;font-size:14px;cursor:pointer;padding:0}
@@ -76,6 +78,8 @@ button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid va
 .wk{margin:0;color:var(--mut);font-size:14px}
 .weak{margin-top:26px}.weak summary{cursor:pointer;color:var(--mut);font-size:15px;margin-bottom:12px}
 .weakc{opacity:.62}.weakc .meter{color:var(--mut)}
+.split{margin:0;font-size:14px;color:var(--mut)}
+.card.part{border-style:dashed}
 .empty{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;color:var(--mut)}
 .more{margin-top:38px;display:flex;justify-content:center}
 .all{position:relative;display:inline-flex;align-items:center;gap:12px;padding:13px 26px;border-radius:99px;color:var(--ink);text-decoration:none;font-weight:600;font-size:17px;border:1px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(120deg,var(--a3),var(--a1),var(--a2)) border-box;transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
@@ -86,23 +90,57 @@ button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid va
 .all:active{transform:scale(.97)}
 .note{text-align:center;margin-top:18px;color:var(--mut);font-size:14px}
 .note a{color:var(--a1)}
+@property --a{syntax:"<angle>";initial-value:0deg;inherits:false}
+canvas#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.box{position:relative}
+.box:before{content:"";position:absolute;inset:-1px;border-radius:23px;padding:1.5px;pointer-events:none;opacity:0;transition:opacity .5s;background:conic-gradient(from var(--a),var(--a1),var(--a3),var(--a2),var(--a1));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.box:focus-within:before{opacity:1;animation:spinb 5s linear infinite}
+@keyframes spinb{to{--a:360deg}}
+.m4t{margin:2px 0 6px;font-size:13px;color:var(--mut)}
+.meter4{display:flex;gap:6px;margin:0 0 8px}
+.seg{flex:1;text-align:center;font-size:12.5px;padding:3px 0;border-radius:99px;border:1px solid var(--line);color:var(--mut);transition:all .6s cubic-bezier(.2,.8,.2,1)}
+.seg.on{color:#06122a;font-weight:600;border-color:transparent;background:linear-gradient(120deg,var(--a3),var(--a1));box-shadow:0 6px 18px -8px var(--a3);transform:translateY(-2px)}
+.live{display:flex;flex-wrap:wrap;gap:7px;min-height:8px;margin:0 0 8px}
+.pop{animation:popin .55s cubic-bezier(.2,.9,.3,1.4) backwards;animation-delay:calc(var(--i)*.08s)}
+@keyframes popin{from{opacity:0;transform:scale(.4) translateY(8px)}}
+.live .d{color:var(--a1);border-color:var(--a1)}.live .a{color:var(--a3);border-color:var(--a3)}.live .t{color:var(--a2);border-color:var(--a2)}
+.go{translate:var(--tx,0px) var(--ty,0px);transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .3s,translate .3s ease-out}
+.rip{position:absolute;width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.5);pointer-events:none;transform:translate(-50%,-50%) scale(0);animation:rip .75s ease-out forwards}
+@keyframes rip{to{transform:translate(-50%,-50%) scale(32);opacity:0}}
+.blip{position:absolute;width:7px;height:7px;border-radius:50%;background:var(--a3);box-shadow:0 0 12px var(--a3);opacity:0;animation:blip 1.2s ease-out infinite;animation-delay:calc(var(--d)*1s)}
+@keyframes blip{30%{opacity:1}100%{opacity:0;transform:scale(2.4)}}
+.stp{text-align:center;color:var(--a3);font-size:15px;margin:-26px 0 30px;min-height:1.6em}
+.card{transform:perspective(900px) translateY(var(--ty,0px)) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}
+.card:hover{--ty:-5px;transform:perspective(900px) translateY(-5px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}
+.card:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .35s;background:radial-gradient(360px circle at var(--mx,50%) var(--my,50%),rgba(143,123,255,.22),transparent 62%)}
+.card:hover:before{opacity:1}
+.gauge{display:flex;align-items:center;gap:12px}
+.gauge svg{width:54px;height:54px;transform:rotate(-90deg);flex:none}
+.gt{fill:none;stroke:rgba(255,255,255,.1);stroke-width:4}
+.gv{fill:none;stroke:var(--gc);stroke-width:4;stroke-linecap:round;stroke-dasharray:113.1;stroke-dashoffset:calc(113.1*(1 - var(--p)/100));filter:drop-shadow(0 0 5px var(--gc));animation:ring 1.3s cubic-bezier(.2,.8,.2,1) .35s backwards}
+@keyframes ring{from{stroke-dashoffset:113.1}}
+.gl{display:flex;flex-direction:column;line-height:1.3}
+.gl b{font:700 26px "Reem Kufi",sans-serif}.gl b:after{content:"٪";font-size:17px}
+.gl span{font-size:14px;color:var(--mut)}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-iteration-count:1!important;animation-delay:0s!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="glow"></div><div class="glow b"></div>
+<div class="glow"></div><div class="glow b"></div><canvas id="bg" aria-hidden="true"></canvas>
 <main>
   <a class="brand" href="index.html"><i class="dot"></i>رادار الفرص</a>
   <h1 aria-label="جرّب فكرتك على الفرص المفتوحة"><span style="--i:0">جرّب</span> <span style="--i:1">فكرتك</span> <span style="--i:2">على</span> <span style="--i:3">الفرص</span> <span style="--i:4">المفتوحة</span></h1>
   <p class="sub">اكتب فكرة مشروعك في كم سطر، ويطلع لك الرادار الهاكاثونات والمسابقات المفتوحة اللي تناسبها.</p>
   <div class="box">
     <textarea id="idea" aria-label="فكرة المشروع" placeholder="مثال: تطبيق يذكّر كبار السن بأدويتهم ويبلّغ أهلهم إذا فاتتهم جرعة..."></textarea>
+    <p class="m4t">اكتمال فكرتك: كل عنصر تضيفه يرفع دقة النسب</p><div class="meter4" id="m4"></div><div class="live" id="live" aria-live="polite"></div>
     <div class="chips" id="chips"></div>
+    <div class="spec" id="spec" role="group" aria-label="تخصصك"><span>تخصصك (اختياري):</span></div>
     <div class="hist" id="hist" hidden><div class="hh"><span>أفكارك السابقة، محفوظة في متصفحك فقط</span><button type="button" class="lnk" id="clr">مسح</button></div><div class="chips" id="hl"></div></div>
     <button class="go" id="go" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5" opacity=".6"/><path d="M12 12L18 6"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/></svg><span>اختبر فكرتي</span></button>
     <p class="hint" id="hint" role="status" aria-live="polite"></p>
   </div>
-  <div class="scan" id="scan" hidden aria-label="جاري المطابقة"></div>
+  <div class="scan" id="scan" hidden aria-label="جاري المطابقة"><span class="blip" style="left:24%;top:30%;--d:.1"></span><span class="blip" style="left:68%;top:22%;--d:.45"></span><span class="blip" style="left:74%;top:64%;--d:.8"></span><span class="blip" style="left:35%;top:72%;--d:.3"></span><span class="blip" style="left:50%;top:46%;--d:.65"></span></div><p class="stp" id="st"></p>
   <div id="out" aria-live="polite"></div>
   <div class="more"><a class="all" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5" opacity=".6"/><path d="M12 12L18 6"/></svg><span>شوف كل الفرص المفتوحة</span><svg class="ch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a></div>
   <p class="note">المطابقة تفهم المجال والمستفيد والتقنية والعلاقات بينها، وكل سبب ترشيح مأخوذ من نص الفرصة نفسه، وليست تحليل ذكاء اصطناعي. كل ما كتبت فكرتك بتفصيل أكثر، تحسّنت الدقة.</p>
@@ -115,7 +153,7 @@ const clean=s=>String(s||'').replace(/[\p{Extended_Pictographic}\uFE0F\u200d\u06
 const re=k=>new RegExp(k.endsWith('=')?' '+k.slice(0,-1)+' ':' '+(k.length>3?'[وبلفك]?':'')+k);
 const AX={d:'المجال',a:'المستفيد',t:'التقنية'};
 const C=[
-['health','d','الصحة','صحه|صحيه|طبي|طبيب|مريض|مرضي|دواء|ادويه|علاج|مستشفي|عياد|تمريض|جرعه|عافيه|سكري|طب='],
+['health','d','الصحة','صحه|صحيه|طبي|طبيب|مريض|مرضي|دواء|دوائ|ادوي|علاج|مستشفي|عياد|تمريض|جرعه|عافيه|سكري|طب='],
 ['wellness','d','اللياقة والرياضة','لياقه|رياضه|رياضي|تغذيه'],
 ['edu','d','التعليم','تعليم|معلم|مدرس|تدريب|مهارات|منهج|دراسي|تعلم=|مدرسه|مدرب|دورات'],
 ['work','d','التوظيف','توظيف|وظائف|وظيفه|مهني|سيره ذاتيه'],
@@ -147,29 +185,67 @@ const C=[
 const CI={},REL={};
 C.forEach(([id,a,l,k])=>CI[id]={id,a,l,rs:k.split('|').map(re)});
 'health,elder,.7;health,patient,.9;health,wellness,.6;health,disab,.5;patient,elder,.5;elder,disab,.3;edu,student,.9;edu,work,.6;edu,kids,.5;disab,edu,.3;work,women,.5;work,student,.5;fin,biz,.5;fin,cyber,.35;biz,smb,.8;biz,women,.3;food,env,.5;food,farmer,.8;food,smb,.6;food,trans,.3;trans,gov,.4;trans,env,.4;trans,tour,.3;env,energy,.8;env,gov,.3;energy,gov,.3;tour,pilgrim,.9;tour,smb,.4;tour,gov,.3;gov,citizen,.8;gov,cyber,.4;game,kids,.4;ai,data,.6;ai,iot,.3;xr,iot,.3'.split(';').forEach(s=>{const[a,b,w]=s.split(',');(REL[a]=REL[a]||[]).push([b,+w]);(REL[b]=REL[b]||[]).push([a,+w])});
+const ds=s=>String(s||'').replace(/[\u064B-\u065F\u0670\u0640]/g,'');
+const SW=new Set(['تطبيق','نظام','منصه','اداه','خدمه','موقع','ذكي','ذكيه','على','الي','الى','هذا','هذه','التي','الذي','كل','مع','عند','بعد','قبل','بين','عن','في','من']);
+const ACT=/(يذكر|يربط|يراقب|يتابع|ينبه|يبلغ|يوفر|يدير|يكشف|يتنبا|يتنبأ|يتيح|يؤتمت|يقترح|يوصل|يحجز|يحلل|يصنف)\s+([^\s،.,؛:!؟]+(?:\s+[^\s،.,؛:!؟]+){0,3})/;
+const OUT=/(يقلل|يخفض|يمنع|يحد من|يحسن|يرفع|يسهل|يساعد|يحمي|يدعم|يعزز|يزيد)\s+([^\s،.,؛:!؟]+(?:\s+[^\s،.,؛:!؟]+){0,3})/;
+const tk=x=>[...new Set(nt(x).split(' ').map(w=>w.replace(/^(وال|بال|كال|فال|لل|ال)(?=\S{2})/,'')).filter(w=>w.length>=3&&!SW.has(w)))];
+const PN=/(?:^|\s)(?:ال)?(مشكل[ةه]|صعوب[ةه]|نسيان|هدر|ازدحام|تلوث|تأخر|تاخر|ضعف|ارتفاع|نقص|فقدان|احتيال|حوادث|عزل[ةه]|تكلف[ةه]|ضياع|اهمال|إهمال|زحام)\s*([^\s،.,؛:!؟]+(?:\s+[^\s،.,؛:!؟]+)?)?/;
+const cut=p=>{const o=[];for(const x of String(p||'').split(/\s+/)){if(!x||(/^(و[يتن]|ثم|اذا|إذا|لكن)/.test(x)&&o.length))break;o.push(x)}while(o.length&&/^(في|من|على|عن|الى|إلى|بين)$/.test(o[o.length-1]))o.pop();return o.join(' ')};
 function readIdea(text){const t=nt(text),by={};
  Object.values(CI).forEach(c=>{let h=0,f=1e9;c.rs.forEach(r=>{const m=t.match(new RegExp(r.source,'g'));if(m){h+=m.length;f=Math.min(f,t.search(r))}});if(h)(by[c.a]=by[c.a]||[]).push({c,h,f})});
- const o=[];for(const a in by)by[a].sort((x,y)=>y.h-x.h||x.f-y.f).slice(0,2).forEach((x,i)=>o.push({c:x.c,w:i?.6:1}));return o}
+ const I={d:[],a:[],t:[]};for(const a in by)I[a]=by[a].sort((x,y)=>y.h-x.h||x.f-y.f).slice(0,2).map((x,i)=>({c:x.c,w:i?.5:1}));
+ if(!I.d.length&&I.a.length){let b=null;(REL[I.a[0].c.id]||[]).forEach(([id,r])=>{if(CI[id].a==='d'&&(!b||r>b[1]))b=[id,r]});if(b)I.d=[{c:CI[b[0]],w:.8,inf:1}]}
+ const q=ds(text),pm=q.match(PN),am=q.match(ACT),om=q.match(OUT);
+ I.problem=pm?(pm[1]+' '+cut(pm[2])).trim():'';I.sol=am?(am[1]+' '+cut(am[2])).trim():'';I.goal=om?(om[1]+' '+cut(om[2])).trim():'';
+
+ let pz=nt(I.problem+' '+(am?cut(am[2]):'')+' '+(om?cut(om[2]):''));Object.values(CI).forEach(c=>{if(c.a!=='d')c.rs.forEach(r=>{pz=pz.replace(new RegExp(r.source,'g'),' ')})});
+ I.pg=tk(pz);return I}
 const GEN=/اي مجال|جميع المجالات|كل المجالات|ابتكار مفتوح|مفتوح لجميع|مفتوح لكل|مجالات متعدده/;
 function oppC(o){const m={};const add=(txt,w,src,snip)=>{const t=nt(txt);Object.values(CI).forEach(c=>{if(c.rs.some(r=>r.test(t))&&(!m[c.id]||m[c.id].w<w))m[c.id]={w,src,snip}})};
- (o.tracks||[]).forEach(x=>add(x,1,'مسارات الفرصة',clean(x)));add(o.name,.9,'اسم الفرصة',clean(o.name));add(o.summary,.6,'وصف الفرصة','');Object.defineProperty(m,'_g',{value:GEN.test(nt([o.name,o.summary,(o.tracks||[]).join(' ')].join(' ')))});return m}
-function match(idea,oc){const ax={},ev=[];
- idea.forEach(({c,w})=>{let b=0,why=null;const d=oc[c.id];if(d){b=d.w;why={d,o:c}}
-  (REL[c.id]||[]).forEach(([id,r])=>{const d=oc[id];if(d&&r*d.w>b){b=r*d.w;why={d,o:CI[id]}}});
-  const x=ax[c.a]=ax[c.a]||[0,0];x[0]+=b*w;x[1]+=w;ev.push({c,b,why})});
- const nod=!Object.keys(oc).some(id=>CI[id].a==='d'),gen=!!oc._g&&nod,cv={};for(const a in ax)cv[a]=ax[a][0]/ax[a][1];
- const hasD=cv.d!==undefined;if(gen&&hasD)cv.d=.45;
- const W={d:.55,a:.2,t:.25};let s=0,z=0;for(const a in cv){s+=W[a]*cv[a];z+=W[a]}s=z?s/z:0;
- if(hasD&&cv.d<.15)s=(cv.t||0)>=.8&&nod?Math.min(Math.max(s,.3),.34):Math.min(s,.2);else if(gen&&hasD)s=Math.min(s,.38);
- return{s,ev,gen:gen&&hasD}}
-const sn=d=>d.snip?` «${d.snip.slice(0,70)}»`:'';
-function reasons(m){const ok=[],gap=[];m.ev.forEach(({c,b,why})=>{
- if(b>=.3&&why)ok.push(why.o.id===c.id?`${AX[c.a]} «${c.l}»: مذكور في ${why.d.src}${sn(why.d)}`:`${AX[c.a]} «${c.l}»: مرتبط بـ«${why.o.l}» الذي تغطيه الفرصة (${why.d.src}${sn(why.d)})`);
- else gap.push(`${AX[c.a]} «${c.l}»: لا يظهر في إعلان الفرصة`)});
- if(m.gen)ok.push('الفرصة عامة ولا تحدد مجالًا، فتناسب أي فكرة مبدئيًا');return{ok,gap}}
-const tier=s=>s>=.65?'تطابق قوي':s>=.45?'تطابق جيد':s>=.3?'تطابق جزئي':'توافق ضعيف جدًا';
+ (o.tracks||[]).forEach(x=>add(x,1,'مسارات الفرصة',clean(x)));add(o.name,.9,'اسم الفرصة',clean(o.name));add(o.summary,.6,'وصف الفرصة','');Object.defineProperty(m,'_g',{value:GEN.test(nt([o.name,o.summary,(o.tracks||[]).join(' ')].join(' ')))});
+ Object.defineProperty(m,'_f',{value:[...(o.tracks||[]).map(x=>({t:nt(x),w:1,src:'مسارات الفرصة',snip:clean(x)})),{t:nt(o.name),w:.9,src:'اسم الفرصة',snip:clean(o.name)},{t:nt(o.summary),w:.6,src:'وصف الفرصة',snip:''}]});return m}
+function match(I,oc,o){
+ const dom=Object.keys(oc).map(k=>CI[k]).filter(c=>c.a==='d').sort((x,y)=>oc[y.id].w-oc[x.id].w),nod=!dom.length,gen=!!oc._g&&nod;
+ const fit=(c,axes)=>{let b=0,w=null;const d=oc[c.id];if(d){b=d.w;w={c,d}}(REL[c.id]||[]).forEach(([id,r])=>{const x=oc[id];if(x&&axes.includes(CI[id].a)&&r*x.w>b){b=r*x.w;w={c:CI[id],d:x,r}}});return{b,w}};
+ const avg=(arr,ax)=>{let s=0,z=0;const ev=[];arr.forEach(({c,w})=>{const f=fit(c,ax);s+=f.b*w;z+=w;ev.push({c,...f})});return{v:z?s/z:null,ev}};
+ let D=0,dev=null;
+ if(I.d.length){const f=I.d.map(x=>({...x,...fit(x.c,['d','a'])}));f.forEach((x,i)=>{const v=x.b*(i?.75:1)*(x.inf?.85:1);if(v>D||!dev){D=v;dev=x}})}
+ if(gen&&I.d.length&&D<.45){D=.45;dev={c:I.d[0].c,gen:1,b:.45}}
+ const g=D>=.35,A=I.a.length?avg(I.a,['a','d']):{v:null,ev:[]},T=I.t.length?avg(I.t,['t']):{v:null,ev:[]};
+ let SP={v:0,f:null};
+ const st=w=>{w=w.length>=6?w.replace(/^[وبلفك]/,''):w;return w.length>=5?w.slice(0,4):w},pgs=I.pg.map(st);
+ if(pgs.length)oc._f.forEach(f=>{let v=0;for(let i=0;i<pgs.length-1;i++)if(new RegExp(' '+pgs[i]+'\\S* '+pgs[i+1]).test(f.t)){v=1;break}
+  if(!v)v=pgs.filter(w=>f.t.includes(' '+w)).length/pgs.length*.5;v*=f.w;if(v>SP.v)SP={v,f}});
+ const Av=g&&A.v!==null?A.v:0,Sv=g&&I.pg.length?SP.v:0;
+ let SK=0,sev=null;if(I.spec&&g)Object.entries(I.spec.m).forEach(([id,w])=>{const d=oc[id];if(d&&w*d.w>SK){SK=w*d.w;sev={c:CI[id],d}}});
+ let th=I.d.length?.55*D+.25*Sv+.2*Av:.25*Sv+.2*Av,te=T.v!==null?(g||!I.d.length?T.v:0):null,kind=I.d.length?'domain':'nodom';
+ let s=th*.88+(te!==null?.12*te:0)+.06*SK;
+ if(I.d.length){if(D<.15)s=Math.min(s,.2);else if(D<.35)s=Math.min(s,D+.15);if(I.d[0].inf)s=Math.min(s,.6)}else s=Math.min(s,.4);
+ if(gen){s=Math.min(Math.max(s,.3),.38);kind='gen'}
+ if(I.d.length&&nod&&!gen&&T.v!==null&&T.v>=.8){s=.3;th=0;te=T.v;kind='tech'}
+ if(I.pg.length&&g&&Sv<.45)s=Math.min(s,.68);
+ s=Math.min(s,.95);
+ const ok=[],gap=[],rw=r=>r>=.8?'وثيق الصلة':r>=.5?'مرتبط':'له علاقة محدودة';
+ const src=d=>d.d.src+(d.d.snip?` «${d.d.snip.slice(0,70)}»`:'');
+ const ln=(lb,e)=>e.w&&e.b>=.3?(e.w.c.id===e.c.id?`${lb} «${e.c.l}»: مذكور في ${src(e.w)}`:`${lb} «${e.c.l}» ${rw(e.w.r)} بـ«${e.w.c.l}» الذي تغطيه الفرصة (${src(e.w)})`):null;
+ if(kind==='tech')ok.push('تغطي تقنيتك فقط ولا تحدد مجالًا، فالتطابق تقني وليس موضوعيًا');
+ else if(kind==='gen')ok.push('الفرصة عامة وتصرّح أنها مفتوحة لأي مجال، فتناسب فكرتك مبدئيًا');
+ else if(dev){const l=ln(dev.c===I.d[0].c?'المجال الرئيسي':'مجال ثانوي',dev);if(l)ok.push(l);else gap.push(`المجال «${dev.c.l}»: لا يغطيه إعلان الفرصة`)}
+ if(g&&kind==='domain'){
+  A.ev.forEach(e=>{const l=e.b>=.5?ln('المستفيد',e):null;l?ok.push(l):gap.push(`المستفيد «${e.c.l}»: لا يظهر في إعلان الفرصة`)});
+  if(I.pg.length){if(SP.v>=.45)ok.push(`المشكلة والهدف «${I.problem||I.goal||I.sol}»: يتقاطعان مع ${SP.f.src}${SP.f.snip?` «${SP.f.snip.slice(0,70)}»`:''}`);else gap.push('المشكلة والهدف: لا يوجد في مسارات الفرصة ما يطابقهما صراحة')}
+  else gap.push('فكرتك ما ذكرت المشكلة أو الهدف بوضوح، فلم نقارنهما بالفرصة، وهذا يخفض الحد الأعلى للنسبة');
+  T.ev.forEach(e=>{const l=e.b>=.5?ln('التقنية',e):null;l?ok.push(l):gap.push(`التقنية «${e.c.l}»: لا تظهر في إعلان الفرصة`)});
+  if(sev&&SK>=.5)ok.push(`تخصصك «${I.spec.l}» يتوافق مع «${sev.c.l}» الذي تغطيه الفرصة (${sev.d.src}${sev.d.snip?` «${sev.d.snip.slice(0,70)}»`:''})`);
+  if(Sv<.45&&Av<.5)gap.push('تطابق المجال وحده يعطي نسبة متوسطة فقط؛ ما ترتفع النسبة إلا إذا تطابقت المشكلة أو المستفيد أيضًا')}
+ else if(!g&&kind==='domain'&&(A.v!==null||T.v!==null||I.pg.length))gap.push('لم تُحتسب المشكلة ولا المستفيد ولا التقنية لأن مجال الفرصة بعيد عن مجال فكرتك');
+ const note=dom.length?`مجال الفرصة («${dom[0].l}») بعيد عن مجال فكرتك («${I.d[0]?I.d[0].c.l:'غير محدد'}»)، وهذا يخفض ترتيبها`:'إعلان الفرصة ما يوضح مجالًا قريبًا من فكرتك';
+ return{s,th,te,ok,gap,note,kind}}
+const tier=s=>s>=.7?'تطابق قوي':s>=.45?'تطابق جيد':s>=.28?'تطابق جزئي':'توافق ضعيف جدًا';
 const CON=[[/طلاب|جامعي|خريج/,'موجّهة للطلاب أو الخريجين'],[/نساء|سيدات|نسائي/,'موجّهة للنساء'],[/ناشئه|رواد اعمال|ريادي/,'للشركات الناشئة ورواد الأعمال'],[/نموذج اولي|mvp/,'قد تتطلب نموذجًا أوليًا'],[/ فريق | فرق /,'التقديم بفريق']];
 const conds=o=>{const t=nt([o.summary,(o.tracks||[]).join(' ')].join(' '));return CON.filter(([r])=>r.test(t)).map(x=>x[1])};
+const SPEC=[['med','الطب والصحة',{health:1,wellness:.5,patient:.6,elder:.4}],['code','البرمجة والذكاء الاصطناعي',{ai:.8,data:.7,iot:.6,chain:.6,xr:.6,cyber:.6}],['eng','الهندسة',{energy:.7,trans:.6,env:.4,iot:.5}],['edu','التعليم',{edu:1,student:.6,kids:.4}],['biz','الأعمال والمالية',{biz:1,fin:.8,smb:.6,tour:.3}],['des','التصميم والإعلام',{game:.8,xr:.5,tour:.3}],['agr','البيئة والزراعة',{food:.9,env:.9,energy:.5,farmer:.6}]].map(([id,l,m])=>({id,l,m}));
 /*END*/
 const $=s=>document.querySelector(s);
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
@@ -184,15 +260,21 @@ function urls(){const u=[],h=location.hostname;
 async function load(){for(const u of urls()){try{const r=await fetch(u+'?t='+Date.now(),{cache:'no-store'});if(r.ok)return await r.json()}catch(e){}}return null}
 
 const EX=['تطبيق يذكّر كبار السن بأدويتهم ويبلّغ أهلهم إذا فاتتهم جرعة','منصة تربط الطلاب بمدربين من خريجي تخصصهم','نظام يقلل هدر الطعام في المطاعم'];
-EX.forEach(t=>{const b=el('button','chip',t);b.type='button';b.onclick=()=>{$('#idea').value=t;$('#idea').focus()};$('#chips').append(b)});
+EX.forEach(t=>{const b=el('button','chip',t);b.type='button';b.onclick=()=>{$('#idea').value=t;$('#idea').focus();$('#idea').dispatchEvent(new Event('input'))};$('#chips').append(b)});
+let spec=null;try{spec=SPEC.find(x=>x.id===localStorage.getItem('radar.spec'))||null}catch(e){}
+SPEC.forEach(x=>{const b=el('button','chip',x.l);b.type='button';b.setAttribute('aria-pressed',String(spec===x));b.onclick=()=>{spec=spec===x?null:x;[...$('#spec').querySelectorAll('button')].forEach(y=>y.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed',String(!!spec));try{localStorage.setItem('radar.spec',spec?spec.id:'')}catch(e){}};$('#spec').append(b)});
 
 function card(o,m,n){
- const c=el('article','card'+(m.s<.3?' weakc':''));c.style.setProperty('--n',n);c.append(el('h3',null,clean(o.name)));
- const mt=el('div','meter',`${tier(m.s)} · ${AR(Math.round(m.s*100))}٪`),bar=el('i');bar.style.setProperty('--w',Math.round(m.s*100)+'%');mt.prepend(bar);c.append(mt);
- if(m.s>=.3){const {ok,gap}=reasons(m),u=el('ul','why');ok.forEach(t=>u.append(el('li',null,t)));gap.forEach(t=>u.append(el('li','gap',t)));c.append(u)}
- else c.append(el('p','wk','ما فيه علاقة واضحة بين فكرتك وما تغطيه هذه الفرصة.'));
+ const c=el('article','card'+(m.s<.28?' weakc':m.s<.45?' part':''));c.style.setProperty('--n',n);c.append(el('h3',null,clean(o.name)));
+ if(!still){c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;c.style.setProperty('--mx',x*100+'%');c.style.setProperty('--my',y*100+'%');c.style.setProperty('--rx',(.5-y)*5+'deg');c.style.setProperty('--ry',(x-.5)*5+'deg')});c.addEventListener('pointerleave',()=>{c.style.setProperty('--rx','0deg');c.style.setProperty('--ry','0deg')})}
+ const pc=Math.min(95,Math.round(m.s*100)),mt=el('div','gauge');
+ mt.style.setProperty('--gc',m.s>=.7?'var(--a3)':m.s>=.45?'var(--a1)':m.s>=.28?'var(--a2)':'var(--mut)');
+ mt.innerHTML=`<svg viewBox="0 0 44 44" aria-hidden="true"><circle class="gt" cx="22" cy="22" r="18"/><circle class="gv" cx="22" cy="22" r="18" style="--p:${pc}"/></svg>`;
+ const gl=el('div','gl'),gb=el('b',null,'٠');gl.append(gb,el('span',null,tier(m.s)));mt.append(gl);c.append(mt);countTo(gb,pc);
+ if(m.s>=.28)c.append(el('p','split',`التطابق الموضوعي ${AR(Math.min(95,Math.round(m.th*100)))}٪ · ${m.te===null?'التطابق التقني: لا تقنية محددة في فكرتك':'التطابق التقني '+AR(Math.min(95,Math.round(m.te*100)))+'٪'}`));
+ if(m.s>=.28){const u=el('ul','why');m.ok.forEach(t=>u.append(el('li',null,t)));m.gap.forEach(t=>u.append(el('li','gap',t)));c.append(u)}else c.append(el('p','wk',m.note));
  const g=el('div','meta');[o.city,o.mode].filter(Boolean).forEach(t=>g.append(el('span','tag',t)));if(o.prize)g.append(el('span','tag prize','لها جوائز'));c.append(g);
- const cd=m.s>=.3?conds(o):[];if(cd.length)c.append(el('p','wk','من نص الإعلان: '+cd.join('، ')+'. تأكد من الشروط قبل التسجيل.'));
+ const cd=m.s>=.28?conds(o):[];if(cd.length)c.append(el('p','wk','من نص الإعلان: '+cd.join('، ')+'. تأكد من الشروط قبل التسجيل.'));
  const d=daysLeft(o.closes);
  c.append(el('span','left'+(d!==null&&d<=3?' soon':''),d===null?'التسجيل مفتوح':d===0?'يغلق التسجيل اليوم':`يغلق التسجيل بعد ${AR(d)} ${d===1?'يوم':d===2?'يومين':d<=10?'أيام':'يوماً'}`));
  const a=el('div','acts'),l=safe(o.link),t=safe(o.tgUrl);
@@ -203,26 +285,61 @@ function card(o,m,n){
 const K='radar.ideas';
 const rd=()=>{try{return JSON.parse(localStorage.getItem(K))||[]}catch(e){return[]}};
 const wr=a=>{try{localStorage.setItem(K,JSON.stringify(a))}catch(e){}};
-function hist(){const a=rd(),l=$('#hl');$('#hist').hidden=!a.length;l.textContent='';a.forEach(t=>{const b=el('button','chip',t.length>38?t.slice(0,38)+'…':t);b.type='button';b.title=t;b.onclick=()=>{$('#idea').value=t;run()};l.append(b)})}
+function hist(){const a=rd(),l=$('#hl');$('#hist').hidden=!a.length;l.textContent='';a.forEach(t=>{const b=el('button','chip',t.length>38?t.slice(0,38)+'…':t);b.type='button';b.title=t;b.onclick=()=>{$('#idea').value=t;$('#idea').dispatchEvent(new Event('input'));run()};l.append(b)})}
 $('#clr').onclick=()=>{wr([]);hist()};
 let busy=false;
 async function run(){
  const idea=$('#idea').value.trim(),hint=$('#hint'),out=$('#out');
  if(busy)return;hint.textContent='';
  if(idea.length<15){hint.textContent='اكتب فكرتك في سطرين على الأقل عشان أقدر أطابقها.';return}
- wr([idea,...rd().filter(x=>x!==idea)].slice(0,5));hist();busy=true;$('#go').classList.add('busy');$('#go span').textContent='جاري الفحص…';out.textContent='';$('#scan').hidden=false;
- const [data]=await Promise.all([load(),new Promise(r=>setTimeout(r,still?0:1100))]);
- $('#scan').hidden=true;busy=false;$('#go').classList.remove('busy');$('#go span').textContent='اختبر فكرتي';
+ wr([idea,...rd().filter(x=>x!==idea)].slice(0,5));hist();busy=true;$('#go').classList.add('busy');$('#go span').textContent='جاري الفحص…';out.textContent='';$('#scan').hidden=false;steps();if(window.pulse)pulse();
+ const [data]=await Promise.all([load(),new Promise(r=>setTimeout(r,still?0:1500))]);
+ $('#scan').hidden=true;$('#st').textContent='';busy=false;$('#go').classList.remove('busy');$('#go span').textContent='اختبر فكرتي';
  if(!data){out.append(el('div','empty','تعذّر تحميل الفرص الآن. حدّث الصفحة بعد قليل.'));return}
- const all=(data.items||[]).filter(alive),id=readIdea(idea);
- if(!id.length){out.append(el('div','empty','ما قدرت أفهم مجال فكرتك من هذا الوصف. اكتب المجال والمستفيد والتقنية اللي تفكر فيها، مثل: تطبيق بالذكاء الاصطناعي يساعد كبار السن في الصحة.'));return}
- const u=el('div','u');['d','a','t'].forEach(a=>{const x=id.filter(e=>e.c.a===a).map(e=>e.c.l);if(x.length)u.append(el('span','tag why',`${AX[a]}: ${x.join('، ')}`))});
- const s=el('p','sum');s.append(document.createTextNode('فهمت فكرتك هكذا، وقارنتها مع '+AR(all.length)+' فرصة مفتوحة:'));out.append(s,u);
- const ms=all.map(o=>({o,m:match(id,oppC(o))})).sort((a,b)=>b.m.s-a.m.s||(a.o.until||'9999').localeCompare(b.o.until||'9999'));
- const main=ms.filter(x=>x.m.s>=.3).slice(0,6),weak=ms.filter(x=>x.m.s<.3).slice(0,5);
- if(main.length){const g=el('div','grid');main.forEach((x,i)=>g.append(card(x.o,x.m,i)));out.append(el('p','sum',`${AR(main.length)} ${main.length>2&&main.length<11?'فرص':'فرصة'} تناسب فكرتك، مرتبة من الأنسب:`),g);g.scrollIntoView({behavior:still?'auto':'smooth',block:'start'})}
- else out.append(el('div','empty','ما فيه فرصة مفتوحة تناسب فكرتك الآن. هذا ما يعني أن فكرتك ضعيفة، بس ما فيه حاليًا فرص قريبة من مجالها. جرّب لاحقًا بعد التحديث القادم.'));
+ const all=(data.items||[]).filter(alive),I=readIdea(idea);I.spec=spec;
+ if(!I.d.length&&!I.a.length&&!I.t.length){out.append(el('div','empty','ما قدرت أفهم مجال فكرتك من هذا الوصف. اكتب المجال والمستفيد والمشكلة اللي تحلها، مثل: تطبيق بالذكاء الاصطناعي يذكّر كبار السن بأدويتهم في مجال الصحة.'));return}
+ const u=el('div','u'),add=(l,x)=>{if(x)u.append(el('span','tag why',`${l}: ${x}`))};
+ add(I.d[0]&&I.d[0].inf?'المجال الرئيسي (مستنتج من المستفيد)':'المجال الرئيسي',I.d[0]&&I.d[0].c.l);add('مجال ثانوي',I.d[1]&&I.d[1].c.l);add('المستفيد',I.a.map(e=>e.c.l).join('، '));add('التقنية',I.t.map(e=>e.c.l).join('، '));add('المشكلة',I.problem);add('الحل',I.sol);add('الهدف الأساسي',I.goal);add('تخصصك',spec&&spec.l);
+ out.append(el('p','sum','فهمت فكرتك هكذا، وقارنتها مع '+AR(all.length)+' فرصة مفتوحة:'),u);
+ if(!I.problem&&!I.goal&&!I.sol)out.append(el('p','wk','كل ما وضّحت المشكلة والهدف والمستفيد زادت دقة النسبة. تطابق المجال وحده ما يعطي نسبة عالية.'));
+ if(!I.d.length)out.append(el('p','wk','ما حددت مجال فكرتك بوضوح، فلن يظهر لها تطابق قوي. اذكر المجال (صحة، تعليم، غذاء...) لنتائج أدق.'));
+ const ms=all.map(o=>({o,m:match(I,oppC(o),o)})).sort((x,y)=>y.m.s-x.m.s||(x.o.until||'9999').localeCompare(y.o.until||'9999'));
+ const main=ms.filter(x=>x.m.s>=.45).slice(0,6),part=ms.filter(x=>x.m.s>=.28&&x.m.s<.45).slice(0,4),weak=ms.filter(x=>x.m.s<.28).slice(0,5);
+ const sec=(rows,t,sub)=>{const g=el('div','grid');rows.forEach((x,i)=>g.append(card(x.o,x.m,i)));out.append(el('p','sum',t));if(sub)out.append(el('p','wk',sub));out.append(g);return g};
+ if(main.length){const g=sec(main,`${AR(main.length)} ${main.length>2&&main.length<11?'فرص':'فرصة'} تناسب فكرتك، مرتبة من الأنسب:`);g.scrollIntoView({behavior:still?'auto':'smooth',block:'start'})}
+ else out.append(el('div','empty','ما فيه فرصة مفتوحة تناسب فكرتك بشكل أساسي الآن. هذا ما يعني أن فكرتك ضعيفة، بس ما فيه حاليًا فرص تغطي مجالها.'));
+ if(part.length)sec(part,'فرص ذات تطابق جزئي','قد تفيدك، لكنها لا تغطي فكرتك بالكامل.');
  if(weak.length){const dt=el('details','weak'),g=el('div','grid');dt.append(el('summary',null,`فرص أخرى بتوافق ضعيف جدًا (${AR(weak.length)}). غالبًا غير مناسبة لفكرتك`));weak.forEach((x,i)=>g.append(card(x.o,x.m,i)));dt.append(g);out.append(dt)}}
+
+const countTo=(e,n)=>{if(still){e.textContent=AR(n);return}const t0=performance.now();(function f(t){const p=Math.min(1,(t-t0)/1100);e.textContent=AR(Math.round(n*(1-Math.pow(1-p,3))));if(p<1)requestAnimationFrame(f)})(t0)};
+const ST=['أفهم مجال فكرتك…','أقارنها بمسارات الفرص…','أرتّب الأنسب لك…'];
+function steps(){const e=$('#st');ST.forEach((t,i)=>setTimeout(()=>{if(busy)e.textContent=t},i*500))}
+/* تحليل حيّ أثناء الكتابة */
+const ta=$('#idea'),live=$('#live'),m4=$('#m4');let lt;
+['المجال','المستفيد','المشكلة أو الهدف','التقنية'].forEach(t=>m4.append(el('span','seg',t)));
+function analyze(){const v=ta.value.trim(),I=v.length>=6?readIdea(v):null;
+ [...m4.children].forEach((x,i)=>x.classList.toggle('on',!!I&&[I.d.length>0,I.a.length>0,!!(I.problem||I.goal||I.sol),I.t.length>0][i]));
+ live.textContent='';if(!I)return;
+ [...I.d.slice(0,1).map(e=>['d',e.c.l]),...I.a.map(e=>['a',e.c.l]),...I.t.map(e=>['t',e.c.l])].forEach(([k,l],i)=>{const c=el('span','tag pop '+k,l);c.style.setProperty('--i',i);live.append(c)})}
+ta.addEventListener('input',()=>{clearTimeout(lt);lt=setTimeout(analyze,220);if(window.pulse)pulse()});
+/* مثال يُكتب تلقائيًا في الخانة الفاضية */
+if(!still)(function(){let i=0,j=0,d=0;(function tk(){if(ta.value||document.activeElement===ta){setTimeout(tk,1000);return}
+ const w=EX[i];ta.placeholder='مثال: '+w.slice(0,j)+'|';if(!d&&j<w.length){j++;setTimeout(tk,48)}else if(!d){d=1;setTimeout(tk,1800)}else if(j>0){j-=2;if(j<0)j=0;setTimeout(tk,16)}else{d=0;i=(i+1)%EX.length;setTimeout(tk,400)}})()})();
+/* زر مغناطيسي وموجة عند الضغط */
+const gob=$('#go');
+if(!still){gob.addEventListener('pointermove',e=>{const r=gob.getBoundingClientRect();gob.style.setProperty('--tx',(e.clientX-r.left-r.width/2)*.16+'px');gob.style.setProperty('--ty',(e.clientY-r.top-r.height/2)*.28+'px')});gob.addEventListener('pointerleave',()=>{gob.style.setProperty('--tx','0px');gob.style.setProperty('--ty','0px')})}
+gob.addEventListener('click',e=>{if(still)return;const r=gob.getBoundingClientRect(),p=el('span','rip');p.style.left=e.clientX-r.left+'px';p.style.top=e.clientY-r.top+'px';gob.append(p);setTimeout(()=>p.remove(),800)});
+/* خلفية حيّة تتفاعل مع المؤشر والكتابة */
+(function(){const c=$('#bg'),x=c.getContext('2d');let W,H,N,P=[],mx=-1e3,my=-1e3,boost=0;
+ const size=()=>{const r=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;c.width=W*r;c.height=H*r;x.setTransform(r,0,0,r,0,0);N=Math.min(70,Math.round(W*H/24000));P=Array.from({length:N},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,r:Math.random()*1.5+.6}))};
+ addEventListener('resize',size);addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY});window.pulse=()=>{boost=1};size();
+ function frame(){x.clearRect(0,0,W,H);const k=1+boost*4;boost*=.96;
+  for(const p of P){p.x+=p.vx*k;p.y+=p.vy*k;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;const dx=mx-p.x,dy=my-p.y,d=Math.hypot(dx,dy);if(d<170&&d>1){p.x+=dx/d*.4;p.y+=dy/d*.4}}
+  for(let i=0;i<N;i++){const a=P[i];x.fillStyle='rgba(143,123,255,.85)';x.beginPath();x.arc(a.x,a.y,a.r,0,7);x.fill();
+   for(let j=i+1;j<N;j++){const b=P[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d<125){x.strokeStyle=`rgba(143,123,255,${.24*(1-d/125)})`;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke()}}
+   const dm=Math.hypot(a.x-mx,a.y-my);if(dm<150){x.strokeStyle=`rgba(94,234,212,${.5*(1-dm/150)})`;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(mx,my);x.stroke()}}
+  if(!still)requestAnimationFrame(frame)}
+ frame()})();
 $('#go').onclick=run;hist();
 $('#idea').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey))run()});
 </script>
